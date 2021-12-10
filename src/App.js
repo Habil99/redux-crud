@@ -6,6 +6,7 @@ import {
   deleteAnnouncement,
   getAnnouncements,
   postAnnouncement,
+  updateAnnouncement,
 } from "./app/features/announcement/announcement.slice";
 import "./style.css";
 
@@ -17,9 +18,16 @@ export default function App() {
     location: "Baku",
   });
 
+  const [willUpdateData, setWillUpdateData] = useState({
+    title: "",
+    description: "",
+    type: "Home",
+    location: "Baku",
+  });
+
   const dispatch = useDispatch();
   const announcements = useSelector(announcementSelector.selectAll);
-  const { status, posting, deleting } = useSelector(
+  const { status, posting, deleting, updating } = useSelector(
     (state) => state.announcement
   );
 
@@ -35,6 +43,12 @@ export default function App() {
     dispatch(postAnnouncement(formData));
   };
 
+  const updateAnnouncementForm = (e) => {
+    e.preventDefault();
+
+    dispatch(updateAnnouncement(willUpdateData));
+  }
+
   const handleReset = () => {
     setFormData({
       title: "",
@@ -43,6 +57,16 @@ export default function App() {
       location: "Baku",
     });
   };
+
+  const handleResetUpdatingData = () => {
+    setWillUpdateData({
+      id: null,
+      title: "",
+      description: "",
+      type: "Home",
+      location: "Baku",
+    });
+  }
 
   const handleDeleteAnnouncement = (id) => {
     // dispatch(deleteAction(id));
@@ -158,15 +182,27 @@ export default function App() {
                       <div className="btn btn-info text-white">
                         {announcement.location}
                       </div>
-                      <button
-                        className="btn btn-danger"
-                        disabled={deleting === "loading"}
-                        onClick={() =>
-                          handleDeleteAnnouncement(announcement.id)
-                        }
-                      >
-                        Delete
-                      </button>
+                      <div className="d-flex align-items-center gap-2 flex-wrap">
+                        <button
+                          className="btn btn-danger"
+                          disabled={deleting === "loading"}
+                          onClick={() =>
+                            handleDeleteAnnouncement(announcement.id)
+                          }
+                        >
+                          Delete
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => setWillUpdateData({
+                          ...willUpdateData,
+                          id: announcement.id,
+                          title: announcement.title,
+                          description: announcement.description,
+                          type: announcement.type,
+                          location: announcement.location,
+                        })}>
+                          Update
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -174,6 +210,99 @@ export default function App() {
             ))
           )}
         </div>
+      </div>
+      <div className="my-4">
+        <form
+          action=""
+          method="POST"
+          name="create-announcement-form"
+          onSubmit={updateAnnouncementForm}
+        >
+          <input
+            className="form-control my-2"
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={willUpdateData.title}
+            onChange={({ target }) =>
+              setWillUpdateData({
+                ...willUpdateData,
+                title: target.value,
+              })
+            }
+            required
+          />
+          <input
+            className="form-control my-2"
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={willUpdateData.description}
+            onChange={({ target }) =>
+              setWillUpdateData({
+                ...willUpdateData,
+                description: target.value,
+              })
+            }
+            required
+          />
+          <div className="d-flex align-items-center gap-3">
+            <select
+              className="form-control form-select"
+              name="type"
+              id=""
+              required
+              value={willUpdateData.type}
+              onChange={({ target }) =>
+                setWillUpdateData({
+                  ...willUpdateData,
+                  type: target.value,
+                })
+              }
+            >
+              <option value="Home">Home</option>
+              <option value="Object">Object</option>
+            </select>
+            <select
+              className="form-control form-select"
+              name="location"
+              id=""
+              value={willUpdateData.location}
+              onChange={({ target }) =>
+                setWillUpdateData({
+                  ...willUpdateData,
+                  location: target.value,
+                })
+              }
+              required
+            >
+              <option value="Baku">Baku</option>
+              <option value="Lankaran">Lankaran</option>
+              <option value="Gence">Gence</option>
+              <option value="Absheron">Absheron</option>
+              <option value="Shusha">Shusha</option>
+              <option value="Sheki">Sheki</option>
+            </select>
+          </div>
+          <div className="d-flex align-items-center gap-3 mt-3">
+            <button
+              className="btn btn-danger"
+              type="reset"
+              disabled={updating === "loading"}
+              onClick={handleResetUpdatingData}
+            >
+              Reset
+            </button>
+            <button
+              className="btn btn-success"
+              type="submit"
+              disabled={updating === "loading"}
+              onClick={updateAnnouncementForm}
+            >
+              Update
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

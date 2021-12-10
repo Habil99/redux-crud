@@ -1,25 +1,11 @@
 {
   "data": [
     {
-      "id": "WlTK0CeuIw6M2IRJrC_zk",
-      "title": "Update Beepex titles to Shopar",
-      "description": "Description just created",
+      "title": "Success 2232",
+      "description": "Authorization was successful. You will be redirected back to Visual Studio Code Updated",
       "type": "Object",
-      "location": "Shusha"
-    },
-    {
-      "id": "1I1vBBGZdhNVyREj8Fzxi",
-      "title": "Success!",
-      "description": "Authorization was successful. You will be redirected back to Visual Studio Code",
-      "type": "Home",
-      "location": "Gence"
-    },
-    {
-      "id": "eJbqM-mIsRwdnNFNRcwnv",
-      "title": "Custom transition",
-      "description": "Once the store is created, we can make it available to our React components",
-      "type": "Object",
-      "location": "Gence"
+      "location": "Gence",
+      "id": "1I1vBBGZdhNVyREj8Fzxi"
     }
   ]
 }

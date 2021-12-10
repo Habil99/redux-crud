@@ -27,10 +27,19 @@ export const getAnnouncements = createAsyncThunk(
   }
 );
 
+export const updateAnnouncement = createAsyncThunk(
+  "announcement/updateAnnouncement",
+  async (body) => {
+    const res = await axios.patch(`http://localhost:3001/data/${body.id}`, { ...body });
+
+    return res.data
+  }
+)
+
 export const deleteAnnouncement = createAsyncThunk(
   "announcement/deleteAnnouncement",
   async (id) => {
-    const res = await axios.delete(`http://localhost:3001/data/${id}`);
+    const res = await axios.delete(`http://localhost:3001/data/${id}`,);
 
     return { response: res.data, id };
   }
@@ -47,6 +56,7 @@ const announcementSlice = createSlice({
     error: null,
     posting: null,
     deleting: null,
+    updating: null
   }),
   reducers: {
     deleteAction: announcementAdapter.removeOne,
@@ -105,6 +115,23 @@ const announcementSlice = createSlice({
         state.error = null;
       }
     },
+    [updateAnnouncement.pending]: (state) => {
+      state.updating = "loading";
+    },
+    [updateAnnouncement.rejected]: (state, { payload }) => {
+      state.updating = "rejected";
+
+      state.error = payload;
+    },
+    [updateAnnouncement.fulfilled]: (state, { payload }) => {
+      state.updating = "success";
+
+      announcementAdapter.updateOne(state, { id: payload.id, changes: payload });
+
+      if (state.error) {
+        state.error = null;
+      }
+    }
   },
 });
 
